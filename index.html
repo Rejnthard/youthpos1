@@ -1,0 +1,1274 @@
+<!doctype html>
+<html lang="id" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YOUTHPOS</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&amp;display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Outfit', sans-serif;
+      box-sizing: border-box;
+    }
+    .banner-strip {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .banner-strip:hover {
+      transform: scale(1.02);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    }
+    .page {
+      display: none !important;
+    }
+    .page.active {
+      display: flex !important;
+      flex-direction: column;
+    }
+    .likert-slider {
+      position: relative;
+      display: flex;
+      align-items: center;
+      height: 140px;
+      user-select: none;
+      padding: 0;
+      margin-top: 50px;
+    }
+    .likert-labels {
+      position: absolute;
+      top: 10px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      padding: 0;
+      z-index: 10;
+    }
+    .likert-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: #475569;
+      text-align: center;
+      flex: 0 0 auto;
+      line-height: 1.3;
+      letter-spacing: -0.3px;
+      width: calc(100% / 5);
+      white-space: pre-wrap;
+    }
+    .likert-track {
+      position: absolute;
+      top: 80px;
+      left: 10%;
+      right: 10%;
+      height: 6px;
+      background-color: #cbd5e1;
+      border-radius: 3px;
+      pointer-events: none;
+    }
+    .likert-thumb {
+      position: absolute;
+      top: 80px;
+      width: 28px;
+      height: 28px;
+      background-color: #ffffff;
+      border: 3px solid #4f46e5;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      cursor: grab;
+      z-index: 20;
+      box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
+      transition: left 0.12s ease-out, box-shadow 0.2s ease;
+    }
+    .likert-thumb:active {
+      cursor: grabbing;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.5);
+    }
+    @keyframes scaleUp {
+      from {
+        transform: scale(0.8);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    @keyframes popIn {
+      0% {
+        transform: scale(0);
+        opacity: 0;
+      }
+      50% {
+        transform: scale(1.05);
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    @keyframes fadeSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    #buku-container {
+      animation: fadeSlideUp 0.5s ease-out;
+    }
+    /* CSS untuk 3 Banner */
+    #link-1-anchor { border-left-color: #6366f1; }
+    #link-2-anchor { border-left-color: #10b981; }
+    #link-3-anchor { border-left-color: #a855f7; }
+  </style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full bg-slate-50 overflow-auto">
+  <!-- Home Page -->
+  <div id="home-page" class="page active w-full h-full flex flex-col items-center pb-20">
+   <!-- Header -->
+   <header class="w-full pt-12 pb-12 flex flex-col items-center justify-center gap-6">
+    <img id="main-logo" class="w-28 h-28 md:w-36 md:h-36 object-cover rounded-2xl shadow-lg border-4 border-white" loading="eager" decoding="async" src="https://raw.githubusercontent.com/Rejnthard/youthpos1/main/IMG-20260327-WA0026.jpg" alt="Logo YOUTHPOS" onerror="this.onerror=null; this.src='https://via.placeholder.com/150?text=YOUTHPOS'; this.alt='Logo placeholder';">
+    <h1 id="main-title" class="text-6xl md:text-8xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">YOUTHPOS</h1>
+   </header>
+   <!-- Main Content (Scrolling Sections) -->
+   <main class="w-full px-4 md:px-0 space-y-12 max-w-5xl flex-1">
+    <!-- Quest Banner --> 
+    <button id="quest-banner" class="banner-strip block w-full bg-gradient-to-r from-gray-400 to-gray-500 rounded-2xl p-8 flex items-center justify-between shadow-lg hover:shadow-xl transition-all cursor-pointer text-white"> 
+     <span id="quest-text" class="text-3xl font-bold">Ayo isi kuesioner quest!</span> 
+     <i data-lucide="clipboard-list" class="w-8 h-8"></i> 
+    </button> 
+    <!-- Link Banners (Hanya 3 Banner) -->
+    <div id="banner-list" class="flex flex-col gap-8 w-full">
+     <!-- Banner 1: Buku & Artikel --> 
+     <a id="link-1-anchor" href="#" target="_blank" rel="noopener noreferrer" class="banner-strip block w-full bg-white rounded-2xl p-8 flex items-center justify-between shadow-lg border-l-8 border-indigo-500">
+      <div class="flex items-center gap-6">
+       <div class="p-4 bg-indigo-100 rounded-xl text-indigo-600">
+        <i id="link-1-icon-el" data-lucide="book-open" class="w-8 h-8"></i>
+       </div>
+       <span id="link-1-text-el" class="text-2xl font-bold text-slate-800">📖 Buku & Artikel</span>
+      </div>
+      <i data-lucide="arrow-up-right" class="text-slate-400 w-6 h-6"></i> 
+     </a> 
+     <!-- Banner 2: Hasil & Insight --> 
+     <a id="link-2-anchor" href="#" target="_blank" rel="noopener noreferrer" class="banner-strip block w-full bg-white rounded-2xl p-8 flex items-center justify-between shadow-lg border-l-8 border-emerald-500">
+      <div class="flex items-center gap-6">
+       <div class="p-4 bg-emerald-100 rounded-xl text-emerald-600">
+        <i id="link-2-icon-el" data-lucide="bar-chart-3" class="w-8 h-8"></i>
+       </div>
+       <span id="link-2-text-el" class="text-2xl font-bold text-slate-800">📊 Hasil & Insight</span>
+      </div>
+      <i data-lucide="arrow-up-right" class="text-slate-400 w-6 h-6"></i> 
+     </a> 
+     <!-- Banner 3: Ruang Komunitas (Discord) --> 
+     <a id="link-3-anchor" href="https://discord.gg/D8NuHvP6r" target="_blank" rel="noopener noreferrer" class="banner-strip block w-full bg-white rounded-2xl p-8 flex items-center justify-between shadow-lg border-l-8 border-purple-500">
+      <div class="flex items-center gap-6">
+       <div class="p-4 bg-purple-100 rounded-xl text-purple-600">
+        <i id="link-3-icon-el" data-lucide="message-circle" class="w-8 h-8"></i>
+       </div>
+       <span id="link-3-text-el" class="text-2xl font-bold text-slate-800">💬 Ruang Komunitas</span>
+      </div>
+      <i data-lucide="arrow-up-right" class="text-slate-400 w-6 h-6"></i> 
+     </a> 
+    </div>
+   </main>
+   <footer class="mt-20 text-slate-400 text-sm">
+    © <span id="year"></span> YOUTHPOS - Remaja Berjiwa Sosial Tinggi
+   </footer>
+  </div>
+  <!-- Quest Page -->
+  <div id="quest-page" class="page w-full h-full flex flex-col items-center bg-slate-50 pb-20">
+   <!-- Header -->
+   <header class="w-full pt-8 pb-6 flex items-center justify-between px-4 bg-white shadow-sm sticky top-0 z-50">
+    <button id="back-button" class="flex items-center gap-2 text-indigo-600 font-bold hover:text-indigo-700 transition-colors hidden md:flex"> <i data-lucide="chevron-left" class="w-6 h-6"></i> Kembali </button>
+    <h1 class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 flex-1 text-center">Kuesioner Quest</h1>
+    <div class="w-20 text-right text-sm text-slate-500 hidden md:block" id="page-indicator"></div>
+   </header>
+   <!-- Content -->
+   <main class="w-full flex justify-center pt-8 flex-1">
+    <div class="w-full max-w-2xl px-4">
+     <div id="questions-container" class="space-y-8 mb-12"></div>
+     <!-- Navigation Buttons -->
+     <div class="flex gap-4 items-center justify-between">
+      <button id="prev-button" class="flex items-center gap-2 px-6 py-3 bg-slate-300 text-slate-700 font-bold rounded-lg hover:bg-slate-400 transition-all disabled:opacity-50 disabled:cursor-not-allowed"> <i data-lucide="chevron-left" class="w-5 h-5"></i> Kembali </button>
+      <div id="progress-dots" class="flex gap-2"></div>
+      <button id="next-button" class="flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"> Selanjutnya <i data-lucide="chevron-right" class="w-5 h-5"></i> </button>
+     </div>
+    </div>
+   </main>
+  </div>
+  <!-- Results Page -->
+  <div id="results-page" class="page w-full h-full flex flex-col items-center bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 pb-20 overflow-auto">
+   <header class="w-full pt-8 pb-6 flex items-center justify-between px-4 bg-white/80 backdrop-blur-sm shadow-sm sticky top-0 z-50">
+    <button id="results-back-button" class="flex items-center gap-2 text-indigo-600 font-bold hover:text-indigo-700 transition-colors"> <i data-lucide="chevron-left" class="w-6 h-6"></i> Kembali </button>
+    <h1 class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">✨ Hasil Kuesioner ✨</h1>
+    <div class="w-20"></div>
+   </header>
+   <main class="w-full flex justify-center pt-12 px-4 flex-1">
+    <div class="w-full max-w-4xl">
+     <div id="results-container" class="mb-12"></div>
+     <div class="flex gap-4 justify-center mt-12 flex-wrap">
+      <button id="results-home-button" class="flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-bold rounded-lg hover:from-indigo-600 hover:to-purple-600 transition-all transform hover:scale-105"> <i data-lucide="home" class="w-5 h-5"></i> Kembali ke Beranda </button>
+     </div>
+    </div>
+   </main>
+  </div>
+  <!-- Success Page -->
+  <div id="success-page" class="page w-full h-full flex flex-col items-center justify-center bg-slate-50 px-4">
+   <div class="text-center">
+    <div class="mb-6 flex justify-center">
+     <div class="p-6 bg-green-100 rounded-full">
+      <i data-lucide="check-circle" class="w-16 h-16 text-green-600"></i>
+     </div>
+    </div>
+    <h1 class="text-4xl md:text-5xl font-black text-slate-800 mb-4">Terima Kasih!</h1>
+    <p class="text-xl text-slate-600 mb-8">Jawaban Anda telah berhasil dikirim</p>
+    <button id="return-home-button" class="px-8 py-4 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition-all text-lg"> Kembali ke Beranda </button>
+   </div>
+  </div>
+  <!-- Buku & Artikel Page -->
+  <div id="buku-page" class="page w-full h-full flex flex-col items-center bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 pb-20 overflow-auto">
+   <header class="w-full pt-8 pb-6 flex items-center justify-between px-4 bg-white/80 backdrop-blur-sm shadow-sm sticky top-0 z-50">
+    <button id="buku-back-button" class="flex items-center gap-2 text-indigo-600 font-bold hover:text-indigo-700 transition-colors"> <i data-lucide="chevron-left" class="w-6 h-6"></i> Kembali </button>
+    <h1 class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-orange-600">📚 Buku &amp; Artikel</h1>
+    <div class="w-20"></div>
+   </header>
+   <main class="w-full flex justify-center pt-12 px-4 flex-1">
+    <div class="w-full max-w-2xl space-y-8">
+      
+      <!-- BUKU 1: Sebuah Seni untuk Bersikap Bodo Amat -->
+      <div id="buku-container-1" class="bg-white rounded-3xl shadow-2xl overflow-hidden">
+        <div class="p-8">
+          <h2 class="text-3xl md:text-4xl font-black text-slate-800 mb-6 text-center">Sebuah Seni untuk Bersikap Bodo Amat</h2>
+          <div class="flex justify-center mb-3">
+            <img class="rounded-2xl shadow-lg w-64 h-auto object-cover" 
+                 loading="lazy" 
+                 src="https://raw.githubusercontent.com/Rejnthard/youthpos1/main/Sebuah-seni-untuk-bersikap-bodoh-amat.jpg" 
+                 alt="Sampul Buku Sebuah Seni untuk Bersikap Bodo Amat" 
+                 onerror="this.onerror=null; this.src='https://via.placeholder.com/300x400?text=Cover+Book'; this.alt='Image unavailable';">
+          </div>
+          <blockquote class="text-xs text-slate-400 text-center border-l-4 border-amber-300 pl-4 py-2 mb-6 bg-amber-50/30 rounded-r-lg">
+            "Sampul Buku Sebuah Seni untuk Bersikap Bodo Amat" oleh Gramedia Widiasarana Indonesia, berlisensi CC BY-SA 4.0 via Wikimedia Commons
+          </blockquote>
+          <div class="bg-amber-50 rounded-xl p-6 mb-6">
+            <h3 class="text-xl font-bold text-amber-800 mb-3 flex items-center gap-2">
+              <i data-lucide="book-open" class="w-5 h-5"></i> 
+              Tentang Buku
+            </h3>
+            <p class="text-slate-700 leading-relaxed mb-4">Sebuah Seni untuk Bersikap Bodo Amat adalah sebuah karya menarik yang ditulis oleh Mark Manson. Buku ini menawarkan perspektif yang segar dan provokatif tentang cara kita melihat dan menghadapi hidup. Dalam buku ini, Mark Manson mengajak pembaca untuk melepaskan diri dari tekanan sosial dan norma-norma yang membatasi, dan mengadopsi sikap yang lebih santai dan tak peduli terhadap hal-hal yang tidak benar-benar penting.</p>
+            <p class="text-slate-700 leading-relaxed">Salah satu kelebihan utama buku Sebuah Seni untuk Bersikap Bodo Amat adalah pendekatannya yang provokatif terhadap kehidupan dan kebahagiaan. Salah satu kekurangannya adalah pandangan Mark Manson yang dianggap kontroversial menurut sebagian orang, seni bersikap bodo amat dan penekanan pada kepuasan diri sendiri dapat dianggap sebagai sudut pandang yang egois atau tidak bertanggung jawab bagi beberapa pembaca.</p>
+          </div>
+          <blockquote class="text-xs text-slate-500 text-center border-l-4 border-amber-400 pl-4 py-2 bg-amber-50/50 rounded-r-lg">
+            Baca lebih lengkapnya di: <a href="https://www.gramedia.com/best-seller/review-buku-seni-bersikap-bodo-amat/" target="_blank" rel="noopener noreferrer nofollow" class="text-amber-600 hover:text-amber-800 underline transition-colors"> Gramedia </a>
+          </blockquote>
+        </div>
+      </div>
+
+      <!-- BUKU 2: Bicara Itu Ada Seninya -->
+      <div id="buku-container-2" class="bg-white rounded-3xl shadow-2xl overflow-hidden">
+        <div class="p-8">
+          <h2 class="text-3xl md:text-4xl font-black text-slate-800 mb-6 text-center">Bicara Itu Ada Seninya</h2>
+          <div class="flex justify-center mb-3">
+            <img class="rounded-2xl shadow-lg w-64 h-auto object-cover" 
+                 loading="lazy" 
+                 src="https://raw.githubusercontent.com/Rejnthard/youthpos1/main/Bicara-itu-ada-seninya.jpg" 
+                 alt="Sampul Buku Bicara Itu Ada Seninya" 
+                 onerror="this.onerror=null; this.src='https://via.placeholder.com/300x400?text=Cover+Book'; this.alt='Image unavailable';">
+          </div>
+          <blockquote class="text-xs text-slate-400 text-center border-l-4 border-amber-300 pl-4 py-2 mb-6 bg-amber-50/30 rounded-r-lg">
+            Sumber: <a href="https://www.gramedia.com/products/bicara-itu-ada-seninya" target="_blank" rel="noopener noreferrer nofollow" class="text-amber-600 hover:text-amber-800 underline transition-colors"> Gramedia </a>
+          </blockquote>
+          <div class="bg-amber-50 rounded-xl p-6 mb-6">
+            <h3 class="text-xl font-bold text-amber-800 mb-3 flex items-center gap-2">
+              <i data-lucide="book-open" class="w-5 h-5"></i> 
+              Tentang Buku
+            </h3>
+            <p class="text-slate-700 leading-relaxed mb-4">Buku "Bicara Itu Ada Seninya", yang ditulis oleh Oh Su Hyang seorang dosen dan pakar komunikasi yang berasal dari Korea Selatan, sukses menggetarkan hati para pembacanya. Di dalam buku ini, penulis menjelaskan tentang bagaimana melatih logika dalam berbicara, sehingga ketika kita berbicara ada isinya (nyawa). Tak hanya itu, penulis juga memberitahu lewat tulisannya seperti darimana datangnya kesan pertama, apa ucapan yang membuat ill-feel dan penyebab takut bicara.</p>
+            <p class="text-slate-700 leading-relaxed mb-4">Di bab pertama, penulis juga mengajarkan kepada pembaca untuk berlatih menyusun cerita, agar lawan bicara kita tertarik untuk mendengarkan cerita kita lewat storytelling. Di dalam bab 4, penulis memberikan sepuluh aturan komunikasi yang perlu diingat. Salah satunya, tiga puluh detik di bibir sama dengan tiga puluh tahun di hati, sepatah kata yang kita ucapkan mungkin saja akan mengubah kehidupan seseorang.</p>
+            <p class="text-slate-700 leading-relaxed">Di dalam bab terakhir, penulis memberikan tiga cara mudah mengolah suara. Tidak hanya itu saja, Oh Su Hyang juga memberikan contoh-contoh dari berbagai tokoh dunia yang menjadikan cara bicara menjadi sebuah hal untuk mencapai keberhasilan. Dalam mencapai keberhasilannya, mereka mengandalkan cara berbicara yang dimiliki.</p>
+          </div>
+          <blockquote class="text-xs text-slate-500 text-center border-l-4 border-amber-400 pl-4 py-2 bg-amber-50/50 rounded-r-lg">
+            Baca lebih lengkapnya di: <a href="https://kpi.ipmafa.ac.id/2023/08/resensi-buku-bicara-itu-ada-seninya.html" target="_blank" rel="noopener noreferrer nofollow" class="text-amber-600 hover:text-amber-800 underline transition-colors"> KPI IPMAFA </a>
+          </blockquote>
+        </div>
+      </div>
+
+      <!-- BUKU 3: Filosofi Teras -->
+      <div id="buku-container-3" class="bg-white rounded-3xl shadow-2xl overflow-hidden">
+        <div class="p-8">
+          <h2 class="text-3xl md:text-4xl font-black text-slate-800 mb-6 text-center">Filosofi Teras</h2>
+          <div class="flex justify-center mb-3">
+            <img class="rounded-2xl shadow-lg w-64 h-auto object-cover" 
+                 loading="lazy" 
+                 src="https://raw.githubusercontent.com/Rejnthard/youthpos1/main/Filosofi-Teras.jpg" 
+                 alt="Sampul Buku Filosofi Teras" 
+                 onerror="this.onerror=null; this.src='https://via.placeholder.com/300x400?text=Cover+Book'; this.alt='Image unavailable';">
+          </div>
+          <blockquote class="text-xs text-slate-400 text-center border-l-4 border-amber-300 pl-4 py-2 mb-6 bg-amber-50/30 rounded-r-lg">
+            Sumber: Gramedia
+          </blockquote>
+          <div class="bg-amber-50 rounded-xl p-6 mb-6">
+            <h3 class="text-xl font-bold text-amber-800 mb-3 flex items-center gap-2">
+              <i data-lucide="book-open" class="w-5 h-5"></i> 
+              Tentang Buku
+            </h3>
+            <p class="text-slate-700 leading-relaxed mb-4">Dalam buku ini, insight pribadi penulis juga perspektif para praktisi dari banyak bidang digabungkan sehingga membuat Filosofi Teras menjelma layaknya hidangan pembuka terhadap filosofi Stoisisme/Stoa, kemudian kita dibuat penasaran dengan ajaran inti lainnya.</p>
+            <p class="text-slate-700 leading-relaxed mb-4">Salah satu kelebihan dari buku ini, Filosofi Teras menawarkan wawasan dan pandangan yang inspiratif dan dapat membantu pembaca untuk mencapai kebahagiaan dan kesuksesan dalam hidup. Henry Manampiring memotivasi pembaca dengan menceritakan pengalaman hidupnya sendiri dan memberikan inspirasi tentang bagaimana ia berhasil menghadapi berbagai tantangan dalam hidupnya.</p>
+            <p class="text-slate-700 leading-relaxed mb-4">Buku ini memberikan semangat bagi pembaca untuk berpikir positif dan berusaha mencapai tujuan hidup mereka.</p>
+            <p class="text-slate-700 leading-relaxed">Salah satu kekurangan dari buku ini adalah kurangnya rincian tentang prinsip-prinsip dan gagasan yang dibahas. Henry Manampiring lebih banyak memberikan gambaran umum dan saran-saran praktis tanpa memberikan rincian tentang bagaimana dan mengapa prinsip-prinsip ini dapat diterapkan dalam hidup.</p>
+          </div>
+          <blockquote class="text-xs text-slate-500 text-center border-l-4 border-amber-400 pl-4 py-2 bg-amber-50/50 rounded-r-lg">
+            Baca lebih lengkapnya di: <a href="https://www.gramedia.com/best-seller/review-buku-filosofi-teras-karya-henry-manampiring/" target="_blank" rel="noopener noreferrer nofollow" class="text-amber-600 hover:text-amber-800 underline transition-colors"> Gramedia </a>
+          </blockquote>
+        </div>
+      </div>
+
+      <!-- ARTIKEL: Kenali Apa Itu Avoidant Personality Disorder -->
+      <div id="artikel-container-1" class="bg-white rounded-3xl shadow-2xl overflow-hidden">
+        <div class="p-8">
+          <!-- Badge Artikel -->
+          <div class="flex items-center gap-2 mb-6">
+            <div class="p-2 bg-blue-100 rounded-lg">
+              <i data-lucide="newspaper" class="w-6 h-6 text-blue-600"></i>
+            </div>
+            <span class="text-sm font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">ARTIKEL KESEHATAN MENTAL</span>
+          </div>
+          
+          <h2 class="text-3xl md:text-4xl font-black text-slate-800 mb-4">Kenali Apa Itu Avoidant Personality Disorder</h2>
+          
+          <!-- Meta Info -->
+          <div class="flex flex-wrap items-center gap-4 text-sm text-slate-500 mb-6 pb-4 border-b border-slate-200">
+            <div class="flex items-center gap-1">
+              <i data-lucide="user" class="w-4 h-4"></i>
+              <span>Tim Medis Alodokter</span>
+            </div>
+            <div class="flex items-center gap-1">
+              <i data-lucide="stethoscope" class="w-4 h-4"></i>
+              <span>Ditinjau oleh: dr. Kevin Adrian</span>
+            </div>
+            <div class="flex items-center gap-1">
+              <i data-lucide="calendar" class="w-4 h-4"></i>
+              <span>Diperbarui: 2024</span>
+            </div>
+          </div>
+          
+          <!-- Konten Artikel -->
+          <div class="bg-blue-50 rounded-xl p-6 mb-6">
+            <p class="text-slate-700 leading-relaxed mb-4">
+              Avoidant personality disorder (AVPD) atau gangguan kepribadian menghindar adalah gangguan kepribadian yang membuat penderitanya kerap menghindari interaksi sosial dengan orang lain. Orang yang memiliki gangguan kepribadian ini sering merasa malu, cemas, dan takut berlebihan terhadap penolakan dari orang lain. Berbeda dengan sifat pemalu yang biasa, avoidant personality disorder membuat penderitanya sulit untuk menjalin hubungan yang dekat dengan orang lain.
+            </p>
+            
+            <h3 class="text-xl font-bold text-blue-800 mb-3 mt-6 flex items-center gap-2">
+              <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+              Gejala Avoidant Personality Disorder
+            </h3>
+            <ul class="list-disc pl-5 space-y-2 text-slate-700 mb-6">
+              <li>Enggan melakukan banyak hal dan mencoba sesuatu baru karena tidak ingin mengambil risiko serta merasa tidak mampu.</li>
+              <li>Terlalu sensitif dan mudah tersinggung ketika menerima kritik.</li>
+              <li>Anhedonia (kehilangan minat atau kesenangan dalam aktivitas yang biasanya menyenangkan).</li>
+              <li>Sering melebih-lebihkan suatu hal.</li>
+              <li>Cenderung memiliki pola pikir yang negatif atau terlalu pesimis.</li>
+            </ul>
+            
+            <h3 class="text-xl font-bold text-blue-800 mb-3 flex items-center gap-2">
+              <i data-lucide="heart-handshake" class="w-5 h-5"></i>
+              Seperti Ini Cara Mengatasi Avoidant Personality Disorder
+            </h3>
+            <p class="text-slate-700 leading-relaxed mb-4">
+              Untuk menangani kondisi ini, psikiater dan psikolog bisa melakukan psikoterapi, termasuk terapi perilaku kognitif. Dengan menjalani terapi, pasien akan dibimbing untuk mengubah pola pikir dan perilakunya menjadi lebih positif, serta belajar untuk berinteraksi dan menerima orang lain.
+            </p>
+          </div>
+          
+          <!-- Sumber -->
+          <blockquote class="text-xs text-slate-500 text-center border-l-4 border-blue-400 pl-4 py-2 bg-blue-50/50 rounded-r-lg">
+            Baca lebih lengkapnya di: 
+            <a href="https://www.alodokter.com/kenali-apa-itu-avoidant-personality-disorder" target="_blank" rel="noopener noreferrer nofollow" class="text-blue-600 hover:text-blue-800 underline transition-colors font-semibold">
+              Alodokter
+            </a>
+            <br>
+            <span class="text-slate-400">Penulis: Tim Medis Alodokter | Ditinjau secara medis oleh: dr. Kevin Adrian</span>
+          </blockquote>
+        </div>
+      </div>
+
+    </div>
+   </main>
+  </div>
+  
+  <script>
+    // Define questions by category
+    const questionsByCategory = {
+      agoraphobia: [
+        { originalIndex: 0, text: "Saya merasa cemas ketika berada di tempat yang ramai atau padat." },
+        { originalIndex: 1, text: "Saya merasa tidak nyaman berada di tempat umum yang sulit untuk segera saya tinggalkan." },
+        { originalIndex: 2, text: "Saya lebih merasa aman jika ditemani orang yang saya kenal saat pergi ke tempat umum." },
+        { originalIndex: 3, text: "Saya menghindari menggunakan transportasi umum karena merasa cemas." },
+        { originalIndex: 4, text: "Saya khawatir mengalami serangan panik ketika berada di luar rumah." },
+        { originalIndex: 5, text: "Saya sering membatalkan rencana pergi keluar karena rasa takut atau cemas." },
+        { originalIndex: 6, text: "Saya merasa lebih tenang ketika berada di rumah dibandingkan di tempat umum." },
+        { originalIndex: 7, text: "Saya merasa sulit untuk pergi jauh dari rumah sendirian." },
+        { originalIndex: 8, text: "Saya merasa terjebak atau tidak memiliki jalan keluar ketika berada di tempat ramai." },
+        { originalIndex: 9, text: "Saya merasa cemas ketika harus menunggu atau berada di antrean panjang di tempat umum." }
+      ],
+      anxious_introvert: [
+        { originalIndex: 10, text: "Saya merasa gugup ketika harus berbicara dengan orang yang baru saya kenal." },
+        { originalIndex: 11, text: "Saya lebih memilih menghabiskan waktu sendirian daripada berada dalam keramaian." },
+        { originalIndex: 12, text: "Saya sering memikirkan kembali interaksi sosial dan merasa khawatir telah mengatakan hal yang salah." },
+        { originalIndex: 13, text: "Saya merasa lelah setelah berinteraksi sosial dalam waktu lama." },
+        { originalIndex: 14, text: "Saya merasa sulit memulai percakapan dengan orang lain." },
+        { originalIndex: 15, text: "Saya merasa lebih nyaman berkomunikasi melalui pesan atau tulisan daripada berbicara langsung." },
+        { originalIndex: 16, text: "Saya sering merasa tidak percaya diri dalam situasi sosial." },
+        { originalIndex: 17, text: "Saya cenderung menghindari menjadi pusat perhatian dalam kelompok." },
+        { originalIndex: 18, text: "Saya merasa cemas ketika harus berbicara di depan banyak orang." },
+        { originalIndex: 19, text: "Saya membutuhkan waktu sendiri untuk memulihkan energi setelah berinteraksi sosial." }
+      ],
+      avpd: [
+        { originalIndex: 20, text: "Saya menghindari aktivitas sosial karena takut dikritik oleh orang lain." },
+        { originalIndex: 21, text: "Saya merasa diri saya kurang menarik atau kurang berharga dibandingkan orang lain." },
+        { originalIndex: 22, text: "Saya sulit mempercayai bahwa orang lain akan menerima saya apa adanya." },
+        { originalIndex: 23, text: "Saya enggan mencoba hal baru karena takut gagal atau dipermalukan." },
+        { originalIndex: 24, text: "Saya sangat sensitif terhadap kritik atau komentar negatif dari orang lain." },
+        { originalIndex: 25, text: "Saya sering merasa takut ditolak dalam hubungan sosial." },
+        { originalIndex: 26, text: "Saya menahan diri untuk tidak terlibat dalam kegiatan kelompok karena takut dievaluasi secara negatif." },
+        { originalIndex: 27, text: "Saya merasa tidak percaya diri ketika harus berinteraksi dengan orang lain." },
+        { originalIndex: 28, text: "Saya sering merasa tidak pantas berada dalam lingkungan sosial tertentu." },
+        { originalIndex: 29, text: "Saya menghindari hubungan yang lebih dekat karena takut ditolak atau disakiti." }
+      ]
+    };
+
+    function shuffle(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    const displayQuestions = [
+      ...shuffle(questionsByCategory.agoraphobia),
+      ...shuffle(questionsByCategory.anxious_introvert),
+      ...shuffle(questionsByCategory.avpd)
+    ];
+
+    const answersMap = new Map();
+    displayQuestions.forEach((q, displayIndex) => {
+      answersMap.set(displayIndex, null);
+    });
+
+    // Load jawaban yang tersimpan
+    function loadAnswersFromLocalStorage() {
+      const savedAnswers = localStorage.getItem('youthpos_answers');
+      if (savedAnswers) {
+        const answersArray = JSON.parse(savedAnswers);
+        for (let i = 0; i < answersArray.length && i < displayQuestions.length; i++) {
+          answersMap.set(i, answersArray[i]);
+        }
+        return true;
+      }
+      return false;
+    }
+
+    // Simpan jawaban ke localStorage
+    function saveAnswersToLocalStorage() {
+      const answersArray = [];
+      for (let i = 0; i < displayQuestions.length; i++) {
+        answersArray.push(answersMap.get(i));
+      }
+      localStorage.setItem('youthpos_answers', JSON.stringify(answersArray));
+      localStorage.setItem('youthpos_last_updated', new Date().toISOString());
+    }
+
+    // Simpan hasil ke localStorage
+    function saveResultsToLocalStorage(results) {
+      localStorage.setItem('youthpos_results', JSON.stringify(results));
+    }
+
+    // Muat hasil dari localStorage
+    function loadResultsFromLocalStorage() {
+      const savedResults = localStorage.getItem('youthpos_results');
+      if (savedResults) {
+        return JSON.parse(savedResults);
+      }
+      return null;
+    }
+
+    // Cek apakah kuesioner sudah diisi
+    function hasAnsweredQuestions() {
+      for (let i = 0; i < displayQuestions.length; i++) {
+        if (answersMap.get(i) !== null) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    // Load data saat halaman pertama kali dimuat
+    loadAnswersFromLocalStorage();
+
+    const QUESTIONS_PER_PAGE = 10;
+    const TOTAL_PAGES = 3;
+    let currentPage = 0;
+
+    const homePage = document.getElementById('home-page');
+    const questPage = document.getElementById('quest-page');
+    const successPage = document.getElementById('success-page');
+    const resultsPage = document.getElementById('results-page');
+    const bukuPage = document.getElementById('buku-page');
+    const questBanner = document.getElementById('quest-banner');
+    const backButton = document.getElementById('back-button');
+    const nextButton = document.getElementById('next-button');
+    const prevButton = document.getElementById('prev-button');
+    const questionsContainer = document.getElementById('questions-container');
+    const pageIndicator = document.getElementById('page-indicator');
+    const progressDots = document.getElementById('progress-dots');
+    const returnHomeButton = document.getElementById('return-home-button');
+
+    function showPage(pageElement) {
+      document.querySelectorAll('.page').forEach(p => {
+        p.classList.remove('active');
+      });
+      pageElement.classList.add('active');
+    }
+
+    function renderProgressDots() {
+      progressDots.innerHTML = '';
+      for (let i = 0; i < TOTAL_PAGES; i++) {
+        const dot = document.createElement('div');
+        dot.className = `w-3 h-3 rounded-full transition-all ${i === currentPage ? 'bg-indigo-600 w-8' : 'bg-slate-300'}`;
+        progressDots.appendChild(dot);
+      }
+    }
+
+    function calculateLabelPositions(sliderWidth) {
+      const trackStart = sliderWidth * 0.1;
+      const trackEnd = sliderWidth * 0.9;
+      const trackWidth = trackEnd - trackStart;
+      
+      const positions = [];
+      for (let i = 0; i < 5; i++) {
+        const positionRatio = i / 4;
+        const position = trackStart + (trackWidth * positionRatio);
+        positions.push(position);
+      }
+      return positions;
+    }
+
+    function getThumbPositionAt50Percent(sliderWidth) {
+      const isMobile = window.innerWidth < 768;
+      return isMobile ? sliderWidth * 0.4375 : sliderWidth * 0.4625;
+    }
+
+    function renderQuestions() {
+      questionsContainer.innerHTML = '';
+      const start = currentPage * QUESTIONS_PER_PAGE;
+      const end = Math.min(start + QUESTIONS_PER_PAGE, displayQuestions.length);
+
+      const containerWidth = questionsContainer.offsetWidth || 576;
+
+      for (let i = start; i < end; i++) {
+        const questionObj = displayQuestions[i];
+        const questionDiv = document.createElement('div');
+        questionDiv.className = 'bg-white rounded-xl p-6 shadow-sm';
+        
+        const questionText = document.createElement('p');
+        questionText.className = 'text-slate-800 font-medium mb-8 text-center';
+        const displayNumber = i + 1;
+        questionText.textContent = `${displayNumber}. ${questionObj.text}`;
+        questionDiv.appendChild(questionText);
+
+        const sliderDiv = document.createElement('div');
+        sliderDiv.className = 'likert-slider';
+        sliderDiv.dataset.displayIndex = i;
+        
+        const labelsDiv = document.createElement('div');
+        labelsDiv.className = 'likert-labels';
+        const labels = ['Sangat Tidak\nSetuju', 'Tidak\nSetuju', 'Netral', 'Setuju', 'Sangat\nSetuju'];
+        labels.forEach(label => {
+          const labelSpan = document.createElement('span');
+          labelSpan.className = 'likert-label';
+          labelSpan.textContent = label;
+          labelsDiv.appendChild(labelSpan);
+        });
+        sliderDiv.appendChild(labelsDiv);
+        
+        const track = document.createElement('div');
+        track.className = 'likert-track';
+        sliderDiv.appendChild(track);
+        
+        const thumb = document.createElement('div');
+        thumb.className = 'likert-thumb';
+        
+        const values = [1, 2, 3, 4, 5];
+        const answerIndex = 2;
+        
+        sliderDiv.dataset.thumbIndex = answerIndex;
+        
+        const sliderContainerWidth = questionsContainer.offsetWidth || 576;
+        const thumbPosition = getThumbPositionAt50Percent(sliderContainerWidth);
+        thumb.style.left = thumbPosition + 'px';
+        
+        sliderDiv.appendChild(thumb);
+        
+        const handleMouseDown = (e) => {
+          e.preventDefault();
+          handleDrag(e, i, sliderDiv, values, answersMap, thumb);
+        };
+        
+        thumb.addEventListener('mousedown', handleMouseDown);
+        thumb.addEventListener('touchstart', handleMouseDown);
+        
+        questionDiv.appendChild(sliderDiv);
+        questionsContainer.appendChild(questionDiv);
+      }
+
+      pageIndicator.textContent = `${currentPage + 1}/${TOTAL_PAGES}`;
+      prevButton.disabled = currentPage === 0;
+      
+      updateNextButtonText();
+
+      renderProgressDots();
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function handleDrag(startEvent, questionIndex, sliderDiv, values, answersMapRef, thumb) {
+      const getClientX = (e) => e.touches ? e.touches[0].clientX : e.clientX;
+      const sliderRect = sliderDiv.getBoundingClientRect();
+      const sliderWidth = sliderRect.width;
+      
+      const labelPositions = calculateLabelPositions(sliderWidth);
+      
+      let isDragging = true;
+      
+      const currentLeft = parseFloat(thumb.style.left);
+      let selectedIndex = 2;
+      let closestDistance = Math.abs(currentLeft - labelPositions[2]);
+      
+      for (let i = 0; i < labelPositions.length; i++) {
+        const distance = Math.abs(currentLeft - labelPositions[i]);
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          selectedIndex = i;
+        }
+      }
+      
+      const moveFn = (e) => {
+        if (!isDragging) return;
+        e.preventDefault();
+        
+        const pageX = getClientX(e);
+        const x = pageX - sliderRect.left;
+        
+        let closestIndex = selectedIndex;
+        let closestDistance = Math.abs(x - labelPositions[selectedIndex]);
+        
+        for (let i = 0; i < labelPositions.length; i++) {
+          const distance = Math.abs(x - labelPositions[i]);
+          if (distance < closestDistance) {
+            closestDistance = distance;
+            closestIndex = i;
+          }
+        }
+        
+        selectedIndex = closestIndex;
+        thumb.style.left = labelPositions[closestIndex] + 'px';
+      };
+      
+      const endFn = () => {
+        if (!isDragging) return;
+        isDragging = false;
+        
+        answersMapRef.set(questionIndex, values[selectedIndex]);
+        sliderDiv.dataset.thumbIndex = selectedIndex;
+        
+        document.removeEventListener('mousemove', moveFn);
+        document.removeEventListener('touchmove', moveFn);
+        document.removeEventListener('mouseup', endFn);
+        document.removeEventListener('touchend', endFn);
+      };
+      
+      document.addEventListener('mousemove', moveFn);
+      document.addEventListener('touchmove', moveFn);
+      document.addEventListener('mouseup', endFn);
+      document.addEventListener('touchend', endFn);
+    }
+
+    questBanner.addEventListener('click', () => {
+      currentPage = 0;
+      answersMap.forEach((_, key) => answersMap.set(key, null));
+      // Hapus data tersimpan saat mulai kuesioner baru
+      localStorage.removeItem('youthpos_answers');
+      localStorage.removeItem('youthpos_results');
+      showPage(questPage);
+      renderQuestions();
+      window.scrollTo(0, 0);
+    });
+
+    backButton.addEventListener('click', () => {
+      currentPage = 0;
+      showPage(homePage);
+      window.scrollTo(0, 0);
+    });
+
+    nextButton.addEventListener('click', () => {
+      if (currentPage < 2) {
+        currentPage++;
+        renderQuestions();
+        window.scrollTo(0, 0);
+      } else if (currentPage === 2) {
+        calculateAndShowResults();
+      }
+    });
+
+    function updateNextButtonText() {
+      if (currentPage === 2) {
+        nextButton.innerHTML = 'Serahkan Jawaban <i data-lucide="send" class="w-5 h-5"></i>';
+      } else {
+        nextButton.innerHTML = 'Selanjutnya <i data-lucide="chevron-right" class="w-5 h-5"></i>';
+      }
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    prevButton.addEventListener('click', () => {
+      if (currentPage > 0) {
+        currentPage--;
+        renderQuestions();
+        window.scrollTo(0, 0);
+      }
+    });
+
+    returnHomeButton.addEventListener('click', () => {
+      currentPage = 0;
+      answersMap.forEach((_, key) => answersMap.set(key, null));
+      showPage(homePage);
+      window.scrollTo(0, 0);
+    });
+
+    // Fungsi untuk menghitung dan menampilkan hasil
+    function calculateAndShowResults() {
+      const categories = {
+        agoraphobia: {
+          name: 'Agorafobia',
+          indices: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+          color: '#6366f1',
+          icon: 'heart-handshake',
+          description: 'Kamu cenderung merasa cemas di tempat ramai atau situasi yang sulit untuk keluar.'
+        },
+        anxious_introvert: {
+          name: 'Anxious Introvert',
+          indices: [10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
+          color: '#8b5cf6',
+          icon: 'brain',
+          description: 'Kamu adalah seorang introvert yang cenderung merasa gugup dalam situasi sosial.'
+        },
+        avpd: {
+          name: 'Avoidant Personality Disorder',
+          indices: [20, 21, 22, 23, 24, 25, 26, 27, 28, 29],
+          color: '#ec4899',
+          icon: 'shield-alert',
+          description: 'Kamu cenderung menghindari interaksi sosial karena takut ditolak atau dikritik.'
+        }
+      };
+
+      const scoreMap = { 1: -2, 2: -1, 3: 0, 4: 1, 5: 2 };
+      const results = [];
+      let allZero = true;
+
+      for (const [key, cat] of Object.entries(categories)) {
+        let totalScore = 0;
+        
+        displayQuestions.forEach((question, displayIndex) => {
+          if (cat.indices.includes(question.originalIndex)) {
+            const answer = answersMap.get(displayIndex);
+            const score = answer !== null && answer !== undefined ? scoreMap[answer] : 0;
+            totalScore += score;
+          }
+        });
+        
+        const maxScore = 20;
+        const percentage = Math.round(((totalScore + maxScore) / (maxScore * 2)) * 100);
+        
+        results.push({
+          ...cat,
+          key: key,
+          totalScore: totalScore,
+          percentage: percentage
+        });
+        
+        if (totalScore !== 0) allZero = false;
+      }
+      
+      if (allZero) {
+        showEmptyResults();
+        return;
+      }
+      
+      // Simpan jawaban dan hasil ke localStorage
+      saveAnswersToLocalStorage();
+      saveResultsToLocalStorage(results);
+      
+      const maxPercentage = Math.max(...results.map(r => r.percentage));
+      const topResults = results.filter(r => r.percentage === maxPercentage);
+      
+      showPage(resultsPage);
+      
+      if (topResults.length === 1) {
+        showSingleResult(topResults[0]);
+      } else {
+        showMultipleResults(topResults);
+      }
+      
+      window.scrollTo(0, 0);
+    }
+
+    function showSingleResult(result) {
+      const container = document.getElementById('results-container');
+      container.innerHTML = '';
+      
+      const card = document.createElement('div');
+      card.className = 'bg-white rounded-3xl shadow-2xl overflow-hidden transform transition-all duration-500';
+      card.style.animation = 'scaleUp 0.5s ease-out';
+      
+      card.innerHTML = `
+        <div style="background: linear-gradient(135deg, ${result.color}20, ${result.color}40); padding: 2rem;">
+          <div class="text-center">
+            <div class="mb-6 inline-block p-6 bg-white rounded-full shadow-lg" style="border: 4px solid ${result.color}">
+              <i data-lucide="${result.icon}" style="width: 80px; height: 80px; color: ${result.color};"></i>
+            </div>
+            <h2 class="text-5xl font-black mb-4" style="color: ${result.color}">${result.name}</h2>
+            <div class="w-24 h-1 mx-auto rounded-full mb-6" style="background: ${result.color}"></div>
+            <p class="text-xl text-slate-700 leading-relaxed max-w-2xl mx-auto">${result.description}</p>
+            
+            <div class="mt-6 inline-block px-6 py-3 rounded-full text-white font-bold text-lg" style="background: ${result.color}">
+              Tingkat Kecenderungan: ${result.percentage}%
+            </div>
+          </div>
+        </div>
+        
+        <div class="p-8 bg-white">
+          <h3 class="text-2xl font-bold text-slate-800 mb-4 flex items-center gap-2">
+            <i data-lucide="lightbulb" style="width: 28px; height: 28px;"></i>
+            Rekomendasi untukmu:
+          </h3>
+          <ul class="space-y-3 text-slate-600">
+            ${getRecommendations(result.name)}
+          </ul>
+          
+          <div class="mt-8 p-4 bg-indigo-50 rounded-xl">
+            <p class="text-indigo-800 font-medium flex items-start gap-2">
+              <i data-lucide="heart" style="width: 20px; height: 20px; flex-shrink: 0; margin-top: 2px;"></i>
+              <span>Ingat, ini hanyalah alat bantu. Jika kamu merasa perlu dukungan lebih lanjut, jangan ragu untuk berkonsultasi dengan profesional kesehatan mental.</span>
+            </p>
+          </div>
+        </div>
+      `;
+      
+      container.appendChild(card);
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function showMultipleResults(topResults) {
+      const container = document.getElementById('results-container');
+      container.innerHTML = '';
+      
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'text-center mb-12';
+      messageDiv.innerHTML = `
+        <h2 class="text-4xl font-bold text-slate-800 mb-4">🤔 Kamu memiliki skor yang sama di beberapa kategori!</h2>
+        <p class="text-xl text-slate-600">Pilih salah satu yang paling menggambarkan dirimu:</p>
+      `;
+      container.appendChild(messageDiv);
+      
+      const cardsGrid = document.createElement('div');
+      const gridCols = topResults.length === 2 ? 'md:grid-cols-2' : 'md:grid-cols-3';
+      cardsGrid.className = `grid grid-cols-1 ${gridCols} gap-6`;
+      
+      topResults.forEach(result => {
+        const card = document.createElement('div');
+        card.className = 'bg-white rounded-2xl p-8 cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-2xl group';
+        card.style.border = `3px solid ${result.color}`;
+        card.style.animation = 'popIn 0.5s ease-out';
+        
+        card.innerHTML = `
+          <div class="text-center">
+            <div class="mb-4 inline-block p-4 bg-gradient-to-br from-gray-50 to-gray-100 rounded-full group-hover:scale-110 transition-transform">
+              <i data-lucide="${result.icon}" style="width: 64px; height: 64px; color: ${result.color};"></i>
+            </div>
+            <h3 class="text-2xl font-bold mb-3" style="color: ${result.color}">${result.name}</h3>
+            <p class="text-slate-600 mb-2">${result.description}</p>
+            <div class="mb-4 text-lg font-bold" style="color: ${result.color}">
+              ${result.percentage}%
+            </div>
+            <span class="inline-block px-6 py-2 rounded-full font-semibold" style="background: ${result.color}20; color: ${result.color};">Pilih Ini</span>
+          </div>
+        `;
+        
+        card.addEventListener('click', () => {
+          const allCards = cardsGrid.children;
+          for (let i = 0; i < allCards.length; i++) {
+            if (allCards[i] !== card) {
+              allCards[i].style.transform = 'scale(0)';
+              allCards[i].style.opacity = '0';
+              allCards[i].style.transition = 'all 0.3s ease';
+            }
+          }
+          
+          card.style.transform = 'scale(1.1)';
+          card.style.transition = 'all 0.5s ease';
+          card.style.boxShadow = '0 25px 50px -12px rgba(0, 0, 0, 0.25)';
+          
+          setTimeout(() => {
+            container.innerHTML = '';
+            showSingleResult(result);
+          }, 500);
+        });
+        
+        cardsGrid.appendChild(card);
+      });
+      
+      container.appendChild(cardsGrid);
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function showEmptyResults() {
+      const container = document.getElementById('results-container');
+      container.innerHTML = '';
+      
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'text-center bg-white rounded-2xl p-12 shadow-lg';
+      messageDiv.innerHTML = `
+        <i data-lucide="clipboard-x" style="width: 80px; height: 80px; color: #ef4444; margin: 0 auto 24px;"></i>
+        <h2 class="text-3xl font-bold text-slate-800 mb-4">Mohon Isi Jawaban</h2>
+        <p class="text-xl text-slate-600 mb-6">Anda belum memberikan jawaban apapun. Silakan isi kuesioner terlebih dahulu.</p>
+        <button id="back-to-quest-button" class="px-6 py-3 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition-all">
+          Kembali ke Kuesioner
+        </button>
+      `;
+      
+      container.appendChild(messageDiv);
+      
+      const backButton = document.getElementById('back-to-quest-button');
+      if (backButton) {
+        backButton.addEventListener('click', () => {
+          showPage(questPage);
+          renderQuestions();
+        });
+      }
+      
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function getRecommendations(categoryName) {
+      const recommendations = {
+        'Agorafobia': `
+          <li>✨ Mulai dengan langkah kecil: keluar rumah sebentar, lalu perlahan perpanjang waktunya</li>
+          <li>📝 Catat pemicu kecemasan dan pelajari pola yang muncul</li>
+          <li>🧘 Latihan pernapasan dalam saat merasa cemas</li>
+          <li>👥 Cari dukungan dari teman atau keluarga terpercaya</li>
+          <li>📚 Baca tentang terapi eksposur yang terbukti membantu mengatasi agorafobia</li>
+        `,
+        'Anxious Introvert': `
+          <li>🎯 Kenali batasan sosialmu dan hormati kebutuhan untuk recharge</li>
+          <li>📖 Persiapkan topik pembicaraan sebelum acara sosial untuk mengurangi kecemasan</li>
+          <li>⏰ Atur waktu interaksi sosial dengan durasi yang nyaman bagimu</li>
+          <li>💪 Latih afirmasi positif tentang kemampuan sosialmu</li>
+          <li>🎨 Temukan aktivitas yang membuatmu nyaman untuk bertemu orang baru secara alami</li>
+        `,
+        'Avoidant Personality Disorder': `
+          <li>🤝 Mulai dengan hubungan yang aman dan perlahan bangun kepercayaan</li>
+          <li>📝 Tantang pikiran negatif dengan menulis bukti yang mendukung dan menentangnya</li>
+          <li>🌟 Fokus pada kekuatan dan pencapaianmu, sekecil apapun</li>
+          <li>💬 Cari terapis yang berpengalaman dengan gangguan kecemasan sosial</li>
+          <li>🌈 Bergabung dengan kelompok dukungan untuk berbagi pengalaman</li>
+        `
+      };
+      
+      return recommendations[categoryName] || `
+        <li>💪 Kamu telah melangkah maju dengan mengisi kuesioner ini</li>
+        <li>📚 Cari informasi lebih lanjut tentang kondisi yang kamu rasakan</li>
+        <li>🤝 Jangan ragu untuk mencari dukungan dari orang terdekat</li>
+        <li>🧘 Praktikkan mindfulness dan perawatan diri secara teratur</li>
+      `;
+    }
+
+    // Tampilkan hasil yang sudah tersimpan
+    function displaySavedResults(savedResults) {
+      const maxPercentage = Math.max(...savedResults.map(r => r.percentage));
+      const topResults = savedResults.filter(r => r.percentage === maxPercentage);
+      
+      showPage(resultsPage);
+      
+      if (topResults.length === 1) {
+        showSingleResult(topResults[0]);
+      } else {
+        showMultipleResults(topResults);
+      }
+      
+      window.scrollTo(0, 0);
+    }
+
+    // Fungsi untuk menampilkan pesan jika belum mengisi kuesioner
+    function showNoQuestMessage() {
+      const container = document.getElementById('results-container');
+      container.innerHTML = '';
+      
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'text-center bg-white rounded-2xl p-12 shadow-lg';
+      messageDiv.innerHTML = `
+        <i data-lucide="clipboard-list" style="width: 80px; height: 80px; color: #f59e0b; margin: 0 auto 24px;"></i>
+        <h2 class="text-3xl font-bold text-slate-800 mb-4">Mohon Isi Kuesioner Quest Terlebih Dahulu!</h2>
+        <p class="text-xl text-slate-600 mb-6">Kamu belum mengisi kuesioner. Silakan isi kuesioner terlebih dahulu untuk melihat hasil & insight.</p>
+        <button id="go-to-quest-button" class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all">
+          Isi Kuesioner Sekarang
+        </button>
+      `;
+      
+      container.appendChild(messageDiv);
+      
+      const goToQuestButton = document.getElementById('go-to-quest-button');
+      if (goToQuestButton) {
+        goToQuestButton.addEventListener('click', () => {
+          currentPage = 0;
+          showPage(questPage);
+          renderQuestions();
+          window.scrollTo(0, 0);
+        });
+      }
+      
+      showPage(resultsPage);
+      
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    // Event listener untuk banner Hasil & Insight
+    const hasilInsightBanner = document.getElementById('link-2-anchor');
+
+    if (hasilInsightBanner) {
+      hasilInsightBanner.addEventListener('click', (e) => {
+        e.preventDefault();
+        
+        // Coba muat hasil yang tersimpan
+        const savedResults = loadResultsFromLocalStorage();
+        const hasAnswers = hasAnsweredQuestions();
+        
+        if (hasAnswers || savedResults) {
+          // Jika ada jawaban atau hasil tersimpan, tampilkan hasil
+          if (savedResults && !hasAnswers) {
+            // Tampilkan hasil yang tersimpan tanpa menghitung ulang
+            displaySavedResults(savedResults);
+          } else {
+            // Hitung ulang dan tampilkan hasil
+            calculateAndShowResults();
+          }
+        } else {
+          // Tampilkan pesan jika belum mengisi
+          showNoQuestMessage();
+        }
+      });
+    }
+
+    // Event listener untuk banner Buku & Artikel
+    const bukuBanner = document.getElementById('link-1-anchor');
+
+    if (bukuBanner) {
+      bukuBanner.addEventListener('click', (e) => {
+        e.preventDefault();
+        showPage(bukuPage);
+        window.scrollTo(0, 0);
+      });
+    }
+
+    const bukuBackButton = document.getElementById('buku-back-button');
+
+    if (bukuBackButton) {
+      bukuBackButton.addEventListener('click', () => {
+        showPage(homePage);
+        window.scrollTo(0, 0);
+      });
+    }
+
+    // Event listener untuk tombol di halaman hasil
+    const resultsBackButton = document.getElementById('results-back-button');
+    const resultsHomeButton = document.getElementById('results-home-button');
+
+    if (resultsBackButton) {
+      resultsBackButton.addEventListener('click', () => {
+        showPage(questPage);
+        renderQuestions();
+      });
+    }
+
+    if (resultsHomeButton) {
+      resultsHomeButton.addEventListener('click', () => {
+        currentPage = 0;
+        answersMap.forEach((_, key) => answersMap.set(key, null));
+        showPage(homePage);
+        window.scrollTo(0, 0);
+      });
+    }
+
+    // Update defaultConfig dengan 3 banner
+    const defaultConfig = {
+      title_text: "YOUTHPOS",
+      quest_button_text: "Ayo isi kuesioner quest!",
+      background_color: "#f8fafc",
+      text_color: "#1e293b",
+      accent_color: "#4f46e5",
+      secondary_color: "#ffffff",
+      link_1_name: "📖 Buku & Artikel",
+      link_1_url: "#",
+      link_1_icon: "book-open",
+      link_2_name: "📊 Hasil & Insight",
+      link_2_url: "#",
+      link_2_icon: "bar-chart-3",
+      link_3_name: "💬 Ruang Komunitas",
+      link_3_url: "https://discord.gg/D8NuHvP6r",
+      link_3_icon: "message-circle",
+      // Banner 4-6 dikosongkan
+      link_4_name: "",
+      link_4_url: "",
+      link_4_icon: "",
+      link_5_name: "",
+      link_5_url: "",
+      link_5_icon: "",
+      link_6_name: "",
+      link_6_url: "",
+      link_6_icon: "",
+      font_family: "Outfit",
+      font_size: 16
+    };
+
+    async function onConfigChange(config) {
+      const title = document.getElementById('main-title');
+      title.textContent = config.title_text || defaultConfig.title_text;
+      
+      document.body.style.backgroundColor = config.background_color || defaultConfig.background_color;
+      
+      const fontStack = `${config.font_family || defaultConfig.font_family}, sans-serif`;
+      document.body.style.fontFamily = fontStack;
+      
+      const baseSize = config.font_size || defaultConfig.font_size;
+      title.style.fontSize = `${baseSize * 4}px`;
+
+      const questText = document.getElementById('quest-text');
+      if (questText) {
+        questText.textContent = config.quest_button_text || defaultConfig.quest_button_text;
+      }
+
+      // Loop untuk 3 banner saja
+      for (let i = 1; i <= 3; i++) {
+        const textEl = document.getElementById(`link-${i}-text-el`);
+        const anchorEl = document.getElementById(`link-${i}-anchor`);
+        const iconEl = document.getElementById(`link-${i}-icon-el`);
+        
+        const name = config[`link_${i}_name`] || defaultConfig[`link_${i}_name`];
+        const url = config[`link_${i}_url`] || defaultConfig[`link_${i}_url`];
+        const iconName = config[`link_${i}_icon`] || defaultConfig[`link_${i}_icon`];
+
+        if (textEl) textEl.textContent = name;
+        if (anchorEl) anchorEl.href = url;
+        if (iconEl) iconEl.setAttribute('data-lucide', iconName);
+        
+        if (anchorEl) {
+          anchorEl.style.backgroundColor = config.secondary_color || defaultConfig.secondary_color;
+          if (textEl) textEl.style.color = config.text_color || defaultConfig.text_color;
+        }
+      }
+
+      if (window.lucide) {
+        window.lucide.createIcons();
+      }
+    }
+
+    function mapToCapabilities(config) {
+      return {
+        recolorables: [
+          {
+            get: () => config.background_color || defaultConfig.background_color,
+            set: (c) => {
+              config.background_color = c;
+              window.elementSdk.setConfig({ background_color: c });
+            }
+          },
+          {
+            get: () => config.secondary_color || defaultConfig.secondary_color,
+            set: (c) => {
+              config.secondary_color = c;
+              window.elementSdk.setConfig({ secondary_color: c });
+            }
+          },
+          {
+            get: () => config.text_color || defaultConfig.text_color,
+            set: (c) => {
+              config.text_color = c;
+              window.elementSdk.setConfig({ text_color: c });
+            }
+          },
+          {
+            get: () => config.accent_color || defaultConfig.accent_color,
+            set: (c) => {
+              config.accent_color = c;
+              window.elementSdk.setConfig({ accent_color: c });
+            }
+          }
+        ],
+        fontEditable: {
+          get: () => config.font_family || defaultConfig.font_family,
+          set: (f) => {
+            config.font_family = f;
+            window.elementSdk.setConfig({ font_family: f });
+          }
+        },
+        fontSizeable: {
+          get: () => config.font_size || defaultConfig.font_size,
+          set: (s) => {
+            config.font_size = s;
+            window.elementSdk.setConfig({ font_size: s });
+          }
+        }
+      };
+    }
+
+    function mapToEditPanelValues(config) {
+      const values = new Map();
+      const keys = [
+        'title_text', 'quest_button_text',
+        'link_1_name', 'link_1_url', 'link_1_icon',
+        'link_2_name', 'link_2_url', 'link_2_icon',
+        'link_3_name', 'link_3_url', 'link_3_icon'
+      ];
+      
+      keys.forEach(key => {
+        values.set(key, config[key] || defaultConfig[key]);
+      });
+      return values;
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities,
+        mapToEditPanelValues
+      });
+    }
+
+    if (window.lucide) {
+      window.lucide.createIcons();
+    }
+
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+ </body>
+       </html>
